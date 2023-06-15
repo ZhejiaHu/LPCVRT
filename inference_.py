@@ -16,15 +16,17 @@ def _read_images(file_path):
 
 
 def infer(model_path, file_path, eval_path):
+    print("Inference step | File path : {} | Evaluation path : {}.".format(file_path, eval_path))
     start_time = time.time()
     model = torch.load(model_path)
     model.eval()
     images = _read_images(file_path)
     for idx, image in enumerate(images):
+        print("Inferring without TensorRT | Image {}".format(idx))
         raw_prediction = model(image)
         prediction = np.argmax(raw_prediction, axis=1)
         np.save(eval_path + "/{}.npy".format(idx), prediction)
-    print("--- Without Tensorrt Inference: {} seconds ---" .format(time.time() - start_time))
+    print("--- Without TensorRT Inference: {} seconds ---" .format(time.time() - start_time))
 
 
 

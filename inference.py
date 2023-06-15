@@ -43,15 +43,15 @@ def _postprocess(raw_prediction, pred_path, idx):
 
 
 def infer(file_path: str, pred_path: str):
-    start_time = time.time()
     print("Inference step | File path : {} | Prediction path : {}.".format(file_path, pred_path))
+    start_time = time.time()
     logger = trt.Logger(trt.Logger.VERBOSE)
     engine_data = _import_engine()
     engine = trt.Runtime(logger).deserialize_cuda_engine(engine_data)
     context = engine.create_execution_context()
     images = _read_images(file_path)
     for idx, image in enumerate(images):
-        print("Inferring | Image {}".format(idx))
+        print("Inferring with TensorRT | Image {}".format(idx))
         curr_raw_prediction = _inference(engine, context, image)
         _postprocess(curr_raw_prediction, pred_path, idx)
-    print("--- With Tensorrt Inference: {} seconds ---" .format(time.time() - start_time))
+    print("--- With TensorRT Inference: {} seconds ---" .format(time.time() - start_time))

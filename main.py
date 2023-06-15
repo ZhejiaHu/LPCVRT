@@ -1,10 +1,12 @@
 import argparse
 
 import inference
+import inference_
 import preprocess_
 
 
-def main(model_path: str, file_path: str, pred_path: str, preprocess: bool) -> None:
+def main(model_path: str, file_path: str, pred_path: str, eval_path: str, preprocess: bool) -> None:
+    inference_.infer(model_path, file_path, eval_path)
     if preprocess: preprocess_.preprocess(model_path)
     inference.infer(file_path, pred_path)
 
@@ -22,4 +24,4 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-    main(args.model_path, args.file_path, args.pred_path, args.preprocess)
+    main(args.model_path, args.file_path, args.pred_path, args.eval_path, args.preprocess)

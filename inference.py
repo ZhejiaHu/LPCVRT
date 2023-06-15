@@ -5,6 +5,7 @@ import pycuda.driver as driver
 import tensorrt as trt
 
 _PLAN_PATH = "model.plan"
+_BINDING_SHAPE = trt.Dims([1, 3, 512, 512])
 _MEAN, _STD = np.array([0.485, 0.456, 0.406])[:, np.newaxis, np.newaxis], np.array([0.229, 0.224, 0.225])[:, np.newaxis, np.newaxis]
 _NUM_IO, _NUM_INPUT, _OUTPUT_INDEX = 2, 1, 1
 
@@ -45,6 +46,7 @@ def infer(file_path: str, pred_path: str):
     engine_data = _import_engine()
     engine = trt.Runtime(logger).deserialize_cuda_engine(engine_data)
     context = engine.create_execution_context()
+    context.set_binding_shape(0, _BINDING_SHAPE)
     images = _read_images(file_path)
     for idx, image in enumerate(images):
         curr_raw_prediction = _inference(engine, context, image)

@@ -4,6 +4,7 @@ import os
 import pycuda.driver as driver
 import pycuda.autoinit
 import tensorrt as trt
+import time
 
 _PLAN_PATH = "model.plan"
 _BINDING_SHAPE = trt.Dims([1, 3, 512, 512])
@@ -42,6 +43,7 @@ def _postprocess(raw_prediction, pred_path, idx):
 
 
 def infer(file_path: str, pred_path: str):
+    start_time = time.time()
     print("Inference step | File path : {} | Prediction path : {}.".format(file_path, pred_path))
     logger = trt.Logger(trt.Logger.VERBOSE)
     engine_data = _import_engine()
@@ -52,3 +54,4 @@ def infer(file_path: str, pred_path: str):
         print("Inferring | Image {}".format(idx))
         curr_raw_prediction = _inference(engine, context, image)
         _postprocess(curr_raw_prediction, pred_path, idx)
+    print("--- With Tensorrt Inference: {} seconds ---" .format(time.time() - start_time))

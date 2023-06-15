@@ -14,6 +14,7 @@ def get_args():
     parser.add_argument("--model_path", type=str, default="model.pth")
     parser.add_argument("--file_path", type=str, default="val/")
     parser.add_argument("--pred_path", type=str, default="pred/")
+    parser.add_argument("--eval_path", type=str, default="eval/")
     parser.add_argument("--preprocess", action="store_true")
     args = parser.parse_args()
     return args

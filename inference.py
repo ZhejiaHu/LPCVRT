@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import os
 import pycuda.driver as driver
+import pycuda.autoinit
 import tensorrt as trt
 
 _PLAN_PATH = "model.plan"

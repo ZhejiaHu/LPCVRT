@@ -24,6 +24,7 @@ def _read_images(file_path):
 
 
 def _inference(engine, context, data):
+    driver.Context.synchronize()
     buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
     buffer_device = []
     for idx in range(_NUM_IO): buffer_device.append(driver.mem_alloc(buffer_host[idx].nbytes))

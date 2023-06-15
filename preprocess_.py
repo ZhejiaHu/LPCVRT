@@ -14,7 +14,7 @@ def _convert_model(path):
 
 def _fold_model():
     command = "polygraphy surgeon sanitize --fold-constants {} -o {}".format(_ONNX_PATH, _ONNX_FOLDED_PATH)
-    subprocess.run(command, shell=True, capture_output=True, text=True)
+    subprocess.run(command)
 
 
 def _create_engine():

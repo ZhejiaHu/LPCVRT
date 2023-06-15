@@ -1,4 +1,4 @@
-import subprocess
+import os
 import tensorrt as trt
 import torch
 
@@ -13,8 +13,7 @@ def _convert_model(path):
 
 
 def _fold_model():
-    command = "polygraphy surgeon sanitize --fold-constants {} -o {}".format(_ONNX_PATH, _ONNX_FOLDED_PATH)
-    subprocess.run(command)
+    os.system("polygraphy surgeon sanitize --fold-constants {} -o {}".format(_ONNX_PATH, _ONNX_FOLDED_PATH))
 
 
 def _create_engine():

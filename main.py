@@ -6,7 +6,7 @@ import preprocess_
 
 
 def main(model_path: str, file_path: str, pred_path: str, eval_path: str, preprocess: bool) -> None:
-    inference_.infer(model_path, file_path, eval_path)
+    # inference_.infer(model_path, file_path, eval_path)
     if preprocess: preprocess_.preprocess(model_path)
     inference.infer(file_path, pred_path)
 

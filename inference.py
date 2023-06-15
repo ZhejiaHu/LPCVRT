@@ -30,11 +30,13 @@ def _inference(engine, context, data):
     buffer_device = []
     for idx in range(_NUM_IO): buffer_device.append(driver.mem_alloc(buffer_host[idx].nbytes))
     driver.memcpy_htod(buffer_device[0], buffer_host[0])
+    start_time = time.time()
     context.execute_v2(buffer_device)
+    end_time = time.time()
     driver.memcpy_dtoh(buffer_host[1], buffer_device[1])
     prediction = np.array(buffer_host[1])
     driver.Context.synchronize()
-    return prediction
+    return prediction, end_time - start_time
 
 
 def _postprocess(raw_prediction, pred_path, idx):
@@ -44,14 +46,15 @@ def _postprocess(raw_prediction, pred_path, idx):
 
 def infer(file_path: str, pred_path: str):
     print("Inference step | File path : {} | Prediction path : {}.".format(file_path, pred_path))
-    start_time = time.time()
     logger = trt.Logger(trt.Logger.VERBOSE)
     engine_data = _import_engine()
     engine = trt.Runtime(logger).deserialize_cuda_engine(engine_data)
     context = engine.create_execution_context()
     images = _read_images(file_path)
+    acc_time = 0
     for idx, image in enumerate(images):
         print("Inferring with TensorRT | Image {}".format(idx))
-        curr_raw_prediction = _inference(engine, context, image)
+        curr_raw_prediction, curr_time = _inference(engine, context, image)
+        acc_time += curr_time
         _postprocess(curr_raw_prediction, pred_path, idx)
-    print("--- With TensorRT Inference: {} seconds ---" .format(time.time() - start_time))
+    print("--- With TensorRT Inference: {} seconds ---" .format(acc_time))

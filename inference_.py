@@ -10,7 +10,7 @@ _MEAN, _STD = np.array([0.485, 0.456, 0.406])[:, np.newaxis, np.newaxis], np.arr
 
 def _read_images(file_path):
     return map(
-        lambda img_file: torch.from_numpy(np.expand_dims((np.transpose(cv2.cvtColor(cv2.imread(file_path + "/{}".format(img_file)), cv2.COLOR_BGR2RGB).astype(np.float32), (2, 0, 1)) / 255 - _MEAN) / _STD, axis=0)),
+        lambda img_file: torch.from_numpy(np.expand_dims((np.transpose(cv2.cvtColor(cv2.imread(file_path + "/{}".format(img_file)), cv2.COLOR_BGR2RGB).astype(np.float32), (2, 0, 1)) / 255 - _MEAN) / _STD, axis=0)).double(),
         sorted(os.listdir(file_path))
     )
 

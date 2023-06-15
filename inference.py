@@ -28,7 +28,10 @@ def _read_images(file_path):
 def _inference(engine, context, data):
     buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
     buffer_device = []
-    for idx in range(_NUM_IO): buffer_device.append(driver.mem_alloc(buffer_host[idx].nbytes))
+    for idx in range(_NUM_IO):
+        alloc = driver.mem_alloc(buffer_host[idx].nbytes)
+        print("Index GPU memory allocation : {}".format(int(alloc)))
+        buffer_device.append(alloc)
     driver.memcpy_htod(buffer_device[0], buffer_host[0])
     start_time = time.time()
     context.execute_v2(buffer_device)

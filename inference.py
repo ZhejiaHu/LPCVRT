@@ -49,5 +49,6 @@ def infer(file_path: str, pred_path: str):
     context = engine.create_execution_context()
     images = _read_images(file_path)
     for idx, image in enumerate(images):
+        print("Inferring | Image {}".format(idx))
         curr_raw_prediction = _inference(engine, context, image)
         _postprocess(curr_raw_prediction, pred_path, idx)

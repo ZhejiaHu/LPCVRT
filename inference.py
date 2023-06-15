@@ -10,8 +10,8 @@ _NUM_IO, _NUM_INPUT, _OUTPUT_INDEX = 2, 1, 1
 
 
 def _import_engine():
-    engine_data = None
     with open(_PLAN_PATH, "rb") as f: engine_data = f.read()
+    assert engine_data is not None
     return engine_data
 
 

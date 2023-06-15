@@ -24,7 +24,6 @@ def _read_images(file_path):
 
 
 def _inference(engine, context, data):
-    driver.Context.synchronize()
     buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
     buffer_device = []
     for idx in range(_NUM_IO): buffer_device.append(driver.mem_alloc(buffer_host[idx].nbytes))
@@ -47,7 +46,6 @@ def infer(file_path: str, pred_path: str):
     engine_data = _import_engine()
     engine = trt.Runtime(logger).deserialize_cuda_engine(engine_data)
     context = engine.create_execution_context()
-    context.set_binding_shape(0, _BINDING_SHAPE)
     images = _read_images(file_path)
     for idx, image in enumerate(images):
         curr_raw_prediction = _inference(engine, context, image)

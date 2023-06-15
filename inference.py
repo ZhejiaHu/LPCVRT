@@ -28,19 +28,24 @@ def _read_images(file_path):
 
 
 def _inference(engine, context, data):
-    buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
+    #buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
+    data_, result_ = np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))
+    input_tensor, output_tensor = torch.from_numpy(data_), torch.from_numpy(result_)
     buffer_device = []
+    print(context.set_tensor_address)
     for idx in range(_NUM_IO):
-        alloc = driver.mem_alloc(buffer_host[idx].nbytes)
-        print("Index GPU memory allocation : {}".format(int(alloc)))
-        buffer_device.append(alloc)
-    driver.memcpy_htod(buffer_device[0], buffer_host[0])
+        context.set_tensor_address(idx, input_tensor.data_ptr())
+        #alloc = driver.mem_alloc(buffer_host[idx].nbytes)
+        #print("Index GPU memory allocation : {}".format(int(alloc)))
+        #buffer_device.append(alloc)
+    #driver.memcpy_htod(buffer_device[0], buffer_host[0])
     start_time = time.time()
     context.execute_v2(buffer_device)
     end_time = time.time()
-    driver.memcpy_dtoh(buffer_host[1], buffer_device[1])
-    prediction = np.array(buffer_host[1])
-    driver.Context.synchronize()
+    #driver.memcpy_dtoh(buffer_host[1], buffer_device[1])
+    prediction = output_tensor.cpu().detach().numpy()
+    assert np.any(prediction != 0)
+    #driver.Context.synchronize()
     return prediction, end_time - start_time
 
 
@@ -50,10 +55,10 @@ def _postprocess(raw_prediction, pred_path, idx):
 
 
 def infer(file_path: str, pred_path: str):
-    exp_tensor = torch.Tensor([1, 2, 3])
-    print("Example tensor CPU address | {}".format(exp_tensor.data_ptr()))
-    exp_tensor = exp_tensor.to(torch.device("cuda"))
-    print("Example tensor GPU address | {}".format(exp_tensor.data_ptr()))
+    #exp_tensor = torch.Tensor([1, 2, 3])
+    #print("Example tensor CPU address | {}".format(exp_tensor.data_ptr()))
+    #exp_tensor = exp_tensor.to(torch.device("cuda"))
+    #print("Example tensor GPU address | {}".format(exp_tensor.data_ptr()))
     print("Inference step | File path : {} | Prediction path : {}.".format(file_path, pred_path))
     logger = trt.Logger(trt.Logger.VERBOSE)
     engine_data = _import_engine()

@@ -6,6 +6,8 @@ import pycuda.autoinit
 import tensorrt as trt
 import time
 
+import torch
+
 _PLAN_PATH = "model.plan"
 _BINDING_SHAPE = trt.Dims([1, 3, 512, 512])
 _MEAN, _STD = np.array([0.485, 0.456, 0.406])[:, np.newaxis, np.newaxis], np.array([0.229, 0.224, 0.225])[:, np.newaxis, np.newaxis]
@@ -48,6 +50,10 @@ def _postprocess(raw_prediction, pred_path, idx):
 
 
 def infer(file_path: str, pred_path: str):
+    exp_tensor = torch.Tensor([1, 2, 3])
+    print("Example tensor CPU address | {}".format(exp_tensor.data_ptr()))
+    exp_tensor = exp_tensor.to(torch.device("cuda"))
+    print("Example tensor GPU address | {}".format(exp_tensor.data_ptr()))
     print("Inference step | File path : {} | Prediction path : {}.".format(file_path, pred_path))
     logger = trt.Logger(trt.Logger.VERBOSE)
     engine_data = _import_engine()

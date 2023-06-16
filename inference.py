@@ -30,9 +30,9 @@ def _read_images(file_path):
 def _inference(engine, context, data):
     #buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
     input_tensor = torch.empty([1, 3, 512, 512], dtype=torch.float32, device=torch.device("cpu"))
-    input_tensor = input_tensor.cuda(memory_format=torch.contiguous_format)
+    input_tensor = input_tensor.cuda().contiguous()
     output_tensor = torch.empty([1, 14, 512, 512], dtype=torch.float32, device=torch.device("cpu"))
-    output_tensor = output_tensor.cuda(memory_format=torch.contiguous_format)
+    output_tensor = output_tensor.cuda()
     #print(data)
     input_tensor.data.copy_(torch.from_numpy(data))
     print(input_tensor.dtype)

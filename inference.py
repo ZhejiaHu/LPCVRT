@@ -43,7 +43,7 @@ def _inference(engine, context, data):
     print("Execution ends")
     end_time = time.time()
     #driver.memcpy_dtoh(buffer_host[1], buffer_device[1])
-
+    print(output_tensor)
     prediction = output_tensor.cpu().numpy()
     print(prediction)
     assert np.any(prediction != 0)
@@ -66,6 +66,7 @@ def infer(file_path: str, pred_path: str):
     engine_data = _import_engine()
     engine = trt.Runtime(logger).deserialize_cuda_engine(engine_data)
     context = engine.create_execution_context()
+    print(context.__dir__())
     images = _read_images(file_path)
     acc_time = 0
     for idx, image in enumerate(images):

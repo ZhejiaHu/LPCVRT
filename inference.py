@@ -76,6 +76,7 @@ def infer(file_path: str, pred_path: str):
     context.debug_sync = True
     images = _read_images(file_path)
     acc_time = 0
+    print(torch.cuda.current_stream(device="cuda"))
     for i in range(2):
         print(engine.get_binding_dtype(i))
         print(engine.get_binding_shape(i))

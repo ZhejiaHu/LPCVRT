@@ -70,6 +70,10 @@ def infer(file_path: str, pred_path: str):
     print(context.__dir__())
     images = _read_images(file_path)
     acc_time = 0
+    for i in range(2):
+        print(engine.get_binding_dtype(i))
+        print(engine.get_binding_shape(i))
+        print(engine.get_binding_vectorized_dim(i))
     for idx, image in enumerate(images):
         print("Inferring with TensorRT | Image {}".format(idx))
         curr_raw_prediction, curr_time = _inference(engine, context, image)

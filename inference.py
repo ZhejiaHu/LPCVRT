@@ -29,18 +29,12 @@ def _read_images(file_path):
 
 def _inference(engine, context, data):
     #buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
-    data_, result_ = np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))
-    input_tensor, output_tensor = torch.from_numpy(data_), torch.from_numpy(result_)
-    buffer_device = []
-    print(context.set_tensor_address)
-    for idx in range(_NUM_IO):
-        context.set_tensor_address(idx, input_tensor.data_ptr())
-        #alloc = driver.mem_alloc(buffer_host[idx].nbytes)
-        #print("Index GPU memory allocation : {}".format(int(alloc)))
-        #buffer_device.append(alloc)
-    #driver.memcpy_htod(buffer_device[0], buffer_host[0])
+    input_tensor = torch.empty([1, 3, 512, 512], dtype=torch.float32, device=torch.device("cuda"))
+    output_tensor = torch.empty([1, 14, 512, 512], dtype=torch.float32, device=torch.device("cuda"))
+    input_tensor.data.copy_(data)
+
     start_time = time.time()
-    context.execute_v2(buffer_device)
+    context.execute_v2(bindings=[int(input_tensor.data_ptr()), int(output_tensor.data_ptr())])
     end_time = time.time()
     #driver.memcpy_dtoh(buffer_host[1], buffer_device[1])
     prediction = output_tensor.cpu().detach().numpy()

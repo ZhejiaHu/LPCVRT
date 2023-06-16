@@ -44,6 +44,7 @@ def _inference(engine, context, data):
     print("Execution starts")
     print("{} : {}".format(input_tensor.data_ptr(), int(input_tensor.data_ptr())))
     print("{} : {}".format(output_tensor.data_ptr(), int(output_tensor.data_ptr())))
+    print(torch.cuda.current_stream(device="cuda"))
     context.execute_v2(bindings=[int(input_tensor.data_ptr()), int(output_tensor.data_ptr())])
     print("Execution ends")
     end_time = time.time()

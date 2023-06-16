@@ -31,10 +31,12 @@ def _inference(engine, context, data):
     #buffer_host = [np.ascontiguousarray(data, dtype=np.float32), np.empty(context.get_binding_shape(_OUTPUT_INDEX), dtype=trt.nptype(engine.get_binding_dtype(_OUTPUT_INDEX)))]
     input_tensor = torch.empty([1, 3, 512, 512], dtype=torch.float32, device=torch.device("cuda"))
     output_tensor = torch.empty([1, 14, 512, 512], dtype=torch.float32, device=torch.device("cuda"))
-    input_tensor.data.copy_(data)
+    input_tensor.data.copy_(torch.from_numpy(data))
 
     start_time = time.time()
+    print("Execution starts")
     context.execute_v2(bindings=[int(input_tensor.data_ptr()), int(output_tensor.data_ptr())])
+    print("Execution ends")
     end_time = time.time()
     #driver.memcpy_dtoh(buffer_host[1], buffer_device[1])
     prediction = output_tensor.cpu().detach().numpy()

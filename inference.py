@@ -74,6 +74,8 @@ def infer(file_path: str, pred_path: str):
         print(engine.get_binding_dtype(i))
         print(engine.get_binding_shape(i))
         print(engine.get_binding_vectorized_dim(i))
+        print("-----------------------------------")
+        print(context.get_binding_shape(i))
     for idx, image in enumerate(images):
         print("Inferring with TensorRT | Image {}".format(idx))
         curr_raw_prediction, curr_time = _inference(engine, context, image)

@@ -73,7 +73,7 @@ def infer(file_path: str, pred_path: str):
     for i in range(2):
         print(engine.get_binding_dtype(i))
         print(engine.get_binding_shape(i))
-        print(engine.get_binding_vectorized_dim(i))
+        print(engine.get_location(i))
         print("-----------------------------------")
         print(context.get_binding_shape(i))
     for idx, image in enumerate(images):

@@ -68,6 +68,7 @@ def infer(file_path: str, pred_path: str):
     context = engine.create_execution_context()
     print(engine.__dir__())
     print(context.__dir__())
+    context.debug_sync = True
     images = _read_images(file_path)
     acc_time = 0
     for i in range(2):

@@ -14,6 +14,9 @@ _MEAN, _STD = np.array([0.485, 0.456, 0.406])[:, np.newaxis, np.newaxis], np.arr
 _NUM_IO, _NUM_INPUT, _OUTPUT_INDEX = 2, 1, 1
 
 
+
+
+
 def _import_engine():
     with open(_PLAN_PATH, "rb") as f: engine_data = f.read()
     assert engine_data is not None
@@ -39,6 +42,8 @@ def _inference(engine, context, data):
     print(input_tensor)
     start_time = time.time()
     print("Execution starts")
+    print("{} : {}".format(input_tensor.data_ptr(), int(input_tensor.data_ptr())))
+    print("{} : {}".format(output_tensor.data_ptr(), int(output_tensor.data_ptr())))
     context.execute_v2(bindings=[int(input_tensor.data_ptr()), int(output_tensor.data_ptr())])
     print("Execution ends")
     end_time = time.time()

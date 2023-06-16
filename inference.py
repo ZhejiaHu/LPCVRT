@@ -66,6 +66,7 @@ def infer(file_path: str, pred_path: str):
     engine_data = _import_engine()
     engine = trt.Runtime(logger).deserialize_cuda_engine(engine_data)
     context = engine.create_execution_context()
+    print(engine.__dir__())
     print(context.__dir__())
     images = _read_images(file_path)
     acc_time = 0
